@@ -10,13 +10,19 @@ public class ParkingBoy {
     }
 
     public ParkingTicket park(Car car) {
-        // TODO: Please implement the method
-        throw new RuntimeException("Not implemented");
+        ParkingTicket ticket = new ParkingTicket();
+        parkingLot.getCars().put(ticket, car);
+
+        return ticket;
     }
 
     public Car fetch(ParkingTicket ticket) {
-        // TODO: Please implement the method
-        throw new RuntimeException("Not implemented");
+        for (ParkingTicket key: parkingLot.getCars().keySet()) {
+            if (key == ticket) {
+                return parkingLot.getCars().get(key);
+            }
+        }
+        return null;
     }
 
     public String getLastErrorMessage() {
