@@ -12,15 +12,21 @@ public class ParkingBoy {
     public ParkingTicket park(Car car) {
         ParkingTicket ticket = new ParkingTicket();
         parkingLot.getCars().put(ticket, car);
+        lastErrorMessage = null;
 
         return ticket;
     }
 
     public Car fetch(ParkingTicket ticket) {
-        for (ParkingTicket key: parkingLot.getCars().keySet()) {
+        for (ParkingTicket key : parkingLot.getCars().keySet()) {
             if (key == ticket) {
                 return parkingLot.getCars().get(key);
             }
+        }
+        if (ticket == null) {
+            lastErrorMessage = "Please provide your parking ticket.";
+        } else {
+            lastErrorMessage = "Unrecognized parking ticket.";
         }
         return null;
     }
