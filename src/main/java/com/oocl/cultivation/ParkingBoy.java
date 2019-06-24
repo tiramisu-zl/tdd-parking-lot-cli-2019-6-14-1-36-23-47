@@ -10,17 +10,25 @@ public class ParkingBoy {
     }
 
     public ParkingTicket park(Car car) {
-        ParkingTicket ticket = new ParkingTicket();
-        parkingLot.getCars().put(ticket, car);
-        lastErrorMessage = null;
+        int availableParkingPosition = parkingLot.getAvailableParkingPosition();
+        if (availableParkingPosition > 0) {
+            ParkingTicket ticket = new ParkingTicket();
+            parkingLot.getCars().put(ticket, car);
+            lastErrorMessage = null;
+            return ticket;
 
-        return ticket;
+        } else {
+            lastErrorMessage = "The parking lot is full.";
+            return null;
+        }
     }
 
     public Car fetch(ParkingTicket ticket) {
         for (ParkingTicket key : parkingLot.getCars().keySet()) {
             if (key == ticket) {
-                return parkingLot.getCars().get(key);
+                Car car = parkingLot.getCars().get(key);
+                parkingLot.getCars().remove(key);
+                return car;
             }
         }
         if (ticket == null) {
