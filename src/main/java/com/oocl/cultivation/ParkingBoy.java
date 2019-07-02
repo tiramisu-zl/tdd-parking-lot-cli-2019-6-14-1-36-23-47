@@ -1,17 +1,20 @@
 package com.oocl.cultivation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ParkingBoy {
 
-    private final ParkingLot parkingLot;
+    private List<ParkingLot> parkingLots = new ArrayList<>();
     private String lastErrorMessage;
 
-    public ParkingBoy(ParkingLot parkingLot) {
-        this.parkingLot = parkingLot;
+    public ParkingBoy(List<ParkingLot> parkingLots) {
+        this.parkingLots = parkingLots;
     }
 
     public ParkingTicket park(Car car) {
-        int availableParkingPosition = parkingLot.getAvailableParkingPosition();
-        if (availableParkingPosition > 0) {
+        ParkingLot parkingLot = parkingLots.stream().filter(lot -> lot.getAvailableParkingPosition() > 0).findFirst().orElse(null);
+        if (parkingLot != null && parkingLot.getAvailableParkingPosition() > 0) {
             ParkingTicket ticket = new ParkingTicket();
             parkingLot.getCars().put(ticket, car);
             lastErrorMessage = null;
@@ -24,11 +27,22 @@ public class ParkingBoy {
     }
 
     public Car fetch(ParkingTicket ticket) {
-        for (ParkingTicket key : parkingLot.getCars().keySet()) {
-            if (key == ticket) {
-                Car car = parkingLot.getCars().get(key);
-                parkingLot.getCars().remove(key);
-                return car;
+        ParkingLot parkingLot = parkingLots.stream().filter(lot -> {
+            for (ParkingTicket key : lot.getCars().keySet()) {
+                if (key == ticket) {
+                    return true;
+                }
+            }
+            return false;
+        }).findAny().orElse(null);
+
+        if (parkingLot != null) {
+            for (ParkingTicket key : parkingLot.getCars().keySet()) {
+                if (key == ticket) {
+                    Car car = parkingLot.getCars().get(key);
+                    parkingLot.getCars().remove(key);
+                    return car;
+                }
             }
         }
         if (ticket == null) {
